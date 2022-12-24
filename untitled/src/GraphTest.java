@@ -40,6 +40,7 @@ public class GraphTest
         else {
             System.out.println("不是二分图\n");
         }
+        System.out.println(knotting_graph);
     }
 
     // 求解闭包用的
@@ -127,17 +128,10 @@ public class GraphTest
         if (get_Implication_class(G).size() == 1) return false;
         while (edgeit.hasNext()) {
             DefaultEdge e = edgeit.next();
-            Iterator<Set<DefaultEdge>> it = get_Implication_class(G).iterator();
-            while (it.hasNext()) {
-                Set<DefaultEdge> cur = it.next();
-                if (cur.contains(e))
-                {
-                    Iterator<DefaultEdge> itt = cur.iterator();
-                    while (itt.hasNext()) {
-                        DefaultEdge e_cur = itt.next();
-                        Iterator<DefaultEdge> ittt = cur.iterator();
-                        while (ittt.hasNext()) {
-                            DefaultEdge e_nxt = ittt.next();
+            for (Set<DefaultEdge> cur : get_Implication_class(G)) {
+                if (cur.contains(e)) {
+                    for (DefaultEdge e_cur : cur) {
+                        for (DefaultEdge e_nxt : cur) {
                             if (is_verse(e_cur, e_nxt, G))
                                 return false;
                         }
@@ -230,6 +224,14 @@ public class GraphTest
         return ans;
     }
 
+    public static boolean isConnected(Set<String> a, Set<String> b, UndirectedGraph<String, DefaultEdge> G) {
+        for (String ver1 : a)
+            for (String ver2 : b)
+                if (G.containsEdge(ver1, ver2))
+                    return true;
+        return false;
+    }
+
     public static UndirectedGraph<String, DefaultEdge> generate_knotting_graph(UndirectedGraph<String, DefaultEdge> G) {
         UndirectedGraph<String, DefaultEdge> implement = get_implement(G);
         HashMap<String, Set<String>> components = Connection(implement);
@@ -250,11 +252,16 @@ public class GraphTest
             for (Set<String> con : split.get(spl_v)) {
                 String new_ver = spl_v + Integer.toString(i);
                 i ++;
+                ver2con.put(new_ver, con);
                 ans.addVertex(new_ver);
             }
         }
-        System.out.println(ans);
-        return null;
+        for (String ver : ans.vertexSet())
+            for (String v : ans.vertexSet())
+                if (v.charAt(0) != ver.charAt(0) && isConnected(ver2con.get(ver), ver2con.get(v), G)) {
+                    ans.addEdge(ver, v);
+                }
+        return ans;
     }
 
     public static UndirectedGraph<String, DefaultEdge> get_implement(UndirectedGraph<String, DefaultEdge> G) {

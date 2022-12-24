@@ -224,10 +224,10 @@ public class GraphTest
         return ans;
     }
 
-    public static boolean isConnected(Set<String> a, Set<String> b, UndirectedGraph<String, DefaultEdge> G) {
+    public static boolean isConnected(Set<String> a, Set<String> b, UndirectedGraph<String, DefaultEdge> G, Character aa, Character bb) {
         for (String ver1 : a)
             for (String ver2 : b)
-                if (G.containsEdge(ver1, ver2))
+                if (G.containsEdge(ver1, ver2) && ver1.charAt(0) == bb && ver2.charAt(0) == aa)
                     return true;
         return false;
     }
@@ -258,7 +258,7 @@ public class GraphTest
         }
         for (String ver : ans.vertexSet())
             for (String v : ans.vertexSet())
-                if (v.charAt(0) != ver.charAt(0) && isConnected(ver2con.get(ver), ver2con.get(v), G)) {
+                if (v.charAt(0) != ver.charAt(0) && isConnected(ver2con.get(ver), ver2con.get(v), G, ver.charAt(0), v.charAt(0))) {
                     ans.addEdge(ver, v);
                 }
         return ans;

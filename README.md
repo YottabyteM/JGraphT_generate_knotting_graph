@@ -161,7 +161,7 @@ public static UndirectedGraph<String, DefaultEdge> generate_knotting_graph(Undir
         }
         for (String ver : ans.vertexSet())
             for (String v : ans.vertexSet())
-                if (v.charAt(0) != ver.charAt(0) && isConnected(ver2con.get(ver), ver2con.get(v), G)) {
+                if (v.charAt(0) != ver.charAt(0) && isConnected(ver2con.get(ver), ver2con.get(v), G, ver.charAt(0), v.charAt(0))) {
                     ans.addEdge(ver, v);
                 }
         return ans;

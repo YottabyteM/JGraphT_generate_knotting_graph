@@ -1,4 +1,4 @@
-# 使用JgraphT完成无向图knotting_graph的转化
+# 使用JgraphT完成连通块结关系(knotting graph)
 这个我搜遍全网，中国的外国的都找了，都没找到，代码也算是原创吧。但是因为Java语法不是很熟，凭着在AcWing刷了十来个Java语法题的“坚实功底”，写了这样一份略显答辩的代码。。基本上Java的优点是一点没体现，日后可能会修改一下。
 ## JgraphT的使用
 

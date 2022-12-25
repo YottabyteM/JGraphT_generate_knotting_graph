@@ -10,12 +10,9 @@ public class GraphTest
     public static void main(String[] args)
     {
         DirectedGraph<String, DefaultEdge> stringGraph = createStringGraph();
-//        Connection(Directed2Undirected(stringGraph));
-//        System.out.println(Judge_binary(Directed2Undirected(stringGraph)));
-//        Iterator<Set<DefaultEdge>> it = get_Implication_class(stringGraph).iterator();
-//        while (it.hasNext()) {
+//        for (Set<DefaultEdge> defaultEdges : get_Implication_class(stringGraph)) {
 //            System.out.print("{ ");
-//            Iterator<DefaultEdge> itt = it.next().iterator();
+//            Iterator<DefaultEdge> itt = defaultEdges.iterator();
 //            while (itt.hasNext()) {
 //                System.out.print(itt.next());
 //                if (itt.hasNext())
@@ -24,21 +21,24 @@ public class GraphTest
 //            System.out.print("}\n");
 //        }
         if (!Judge_comparability(stringGraph)) {
-            System.out.println("不是可比性图\n");
+            System.out.println("不是可比性图");
             return;
+        }
+        else {
+            System.out.println("是可比性图");
         }
         UndirectedGraph<String, DefaultEdge> knotting_graph = generate_knotting_graph(Directed2Undirected(stringGraph));
         if (Judge_connection(knotting_graph, knotting_graph.vertexSet().iterator().next())) {
-            System.out.println("是连通图\n");
+            System.out.println("是连通图");
         }
         else {
-            System.out.println("不是连通图\n");
+            System.out.println("不是连通图");
         }
         if (Judge_Bipartite(knotting_graph)) {
-            System.out.println("是二分图\n");
+            System.out.println("是二分图");
         }
         else {
-            System.out.println("不是二分图\n");
+            System.out.println("不是二分图");
         }
         System.out.println(knotting_graph);
     }
@@ -141,6 +141,8 @@ public class GraphTest
         }
         return true;
     }
+    // 判断是不是连通图
+
     public static boolean Judge_connection(UndirectedGraph<String, DefaultEdge> G, String start) {
         Iterator<String> iterator = new BreadthFirstIterator<>(G, start);
         int num = 0;
@@ -188,11 +190,6 @@ public class GraphTest
         return p.get(x);
     }
 
-    public static String find_Union(String ver, HashMap<String, String> p) {
-        if (p.get(ver).equals(ver))
-            return p.get(ver);
-        return find_Union(p.get(ver), p);
-    }
 
     public static HashMap<String, Set<String>> Connection(UndirectedGraph<String, DefaultEdge> G) {
         HashMap<String, Set<String>> ans = new HashMap<>();
@@ -202,8 +199,7 @@ public class GraphTest
         }
         for (DefaultEdge cur : G.edgeSet()) {
             String st = G.getEdgeTarget(cur), ed = G.getEdgeSource(cur);
-            p.remove(st);
-            p.put(st, find(ed, p));
+            p.put(find(st, p), find(ed, p));
         }
         for (String v : G.vertexSet()) {
             if (p.get(v).equals(v)) {
@@ -211,19 +207,21 @@ public class GraphTest
                 ans.get(v).add(v);
             }
             else {
-                String r = find_Union(v, p);
-                if (!ans.containsKey(r)) ans.put(v, new HashSet<>());
+                String r = find(v, p);
+                if (!ans.containsKey(r)) ans.put(r, new HashSet<>());
                 ans.get(r).add(v);
             }
         }
         for (String v : G.vertexSet()) {
             if (!p.get(v).equals(v)) {
-                ans.put(v, ans.get(find_Union(v, p)));
+                ans.put(v, ans.get(find(v, p)));
             }
         }
+        System.out.println(ans);
         return ans;
     }
 
+    // 判断是不是需要连接起来
     public static boolean isConnected(Set<String> a, Set<String> b, UndirectedGraph<String, DefaultEdge> G, Character aa, Character bb) {
         for (String ver1 : a)
             for (String ver2 : b)
@@ -232,9 +230,12 @@ public class GraphTest
         return false;
     }
 
+    //生成knotting_graph
     public static UndirectedGraph<String, DefaultEdge> generate_knotting_graph(UndirectedGraph<String, DefaultEdge> G) {
+        // 先找到补图
         UndirectedGraph<String, DefaultEdge> implement = get_implement(G);
         HashMap<String, Set<String>> components = Connection(implement);
+        System.out.println(components);
         HashMap<String, Set<Set<String>>> split = new HashMap<>();
         for (String ver : G.vertexSet()) {
             for (DefaultEdge e : G.edgesOf(ver)) {
@@ -289,6 +290,7 @@ public class GraphTest
                 ans.addEdge(st, ed);
             }
         }
+        System.out.println(ans);
         return ans;
     }
     private static DirectedGraph<String, DefaultEdge> createStringGraph()
@@ -319,16 +321,18 @@ B D
 //            String op1 = sc.next();
 //            String op2 = sc.next();
 //            g.addEdge(op1, op2);
+//            g.addEdge(op2, op1);
 //        }
         String v1 = "A";
         String v2 = "B";
         String v3 = "C";
         String v4 = "D";
         String v5 = "E";
-        String v6 = "F";
-        String v7 = "G";
-        String v8 = "H";
-
+//        String v6 = "F";
+//        String v7 = "G";
+//        String v8 = "H";
+//        String v9 = "I";
+//
         g.addVertex(v1);
         g.addVertex(v2);
         g.addVertex(v3);
@@ -337,7 +341,34 @@ B D
 //        g.addVertex(v6);
 //        g.addVertex(v7);
 //        g.addVertex(v8);
-
+//        g.addVertex(v9);
+//
+//        g.addEdge(v1, v2);
+//        g.addEdge(v2, v1);
+//        g.addEdge(v1, v3);
+//        g.addEdge(v3, v1);
+//        g.addEdge(v2, v3);
+//        g.addEdge(v3, v2);
+//        g.addEdge(v1, v4);
+//        g.addEdge(v4, v1);
+//        g.addEdge(v3, v4);
+//        g.addEdge(v4, v3);
+//        g.addEdge(v3, v6);
+//        g.addEdge(v6, v3);
+//        g.addEdge(v2, v6);
+//        g.addEdge(v6, v2);
+//        g.addEdge(v4, v6);
+//        g.addEdge(v6, v4);
+//        g.addEdge(v5, v6);
+//        g.addEdge(v6, v5);
+//        g.addEdge(v4, v5);
+//        g.addEdge(v5, v4);
+//        g.addEdge(v1, v7);
+//        g.addEdge(v7, v1);
+//        g.addEdge(v2, v8);
+//        g.addEdge(v8, v2);
+//        g.addEdge(v5, v9);
+//        g.addEdge(v9, v5);
 //        g.addEdge(v1, v2);
 //        g.addEdge(v2, v1);
 //        g.addEdge(v1, v4);
@@ -354,7 +385,7 @@ B D
 //        g.addEdge(v7, v6);
 //        g.addEdge(v7, v8);
 //        g.addEdge(v8, v7);
-
+//
         g.addEdge(v1, v2);
         g.addEdge(v2, v3);
         g.addEdge(v4, v5);
@@ -390,6 +421,7 @@ B D
 //        g.addEdge(v2, v3);
 //        g.addEdge(v2, v4);
 //        g.addEdge(v2, v5);
+
         return g;
     }
 }

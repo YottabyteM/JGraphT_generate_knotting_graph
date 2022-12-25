@@ -119,14 +119,8 @@ public static String find(String x, HashMap<String, String> p)
     if (!p.get(x).equals(x)) {
         String fa = p.get(x);
         p.put(x, find(fa, p));
-	}
-	return p.get(x);
-}
-
-public static String find_Union(String ver, HashMap<String, String> p) {
-    if (p.get(ver).equals(ver))
-    	return p.get(ver);
-    return find_Union(p.get(ver), p);
+    }
+    return p.get(x);
 }
 ```
 
@@ -165,7 +159,7 @@ public static UndirectedGraph<String, DefaultEdge> generate_knotting_graph(Undir
                     ans.addEdge(ver, v);
                 }
         return ans;
-    }
+}
 ```
 
 ### 二分性和连通性
